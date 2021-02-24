@@ -29,6 +29,22 @@ export default class ModalOpenFile extends Component {
         }
     }
 
+	handleNew = () =>
+	{
+		// fetch data from api
+		fetch(this.urlPrefix + '/api/addBooks')
+			.then(response => response.json())
+			.then(data => this.transform(data))
+			.then(data => this.setState({
+				BooksOptions: data,
+				loadModalOpen: true
+			}))
+			.catch(()=> {
+				alert("Lost connection to server.")
+			});
+
+	}
+
 	handleOpen = () =>
 	{
 		// fetch data from api
