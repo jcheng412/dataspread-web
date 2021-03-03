@@ -2,6 +2,7 @@ import React, {Component} from 'react'
 import { Button, Divider, Segment } from 'semantic-ui-react'
 import ModalOpenFile from './Menu/load'
 import ModalImportFile from './Menu/import'
+import ModalNewFile from './Menu/new'
 
 
 export default class StartupBox extends Component {
@@ -10,11 +11,7 @@ export default class StartupBox extends Component {
       return (
         <div style={center_screen}>
             <Segment padded>
-                <Button secondary fluid>
-                    <div>
-                        New File
-                    </div>
-                </Button>
+                <ModalNewFile inMenu={false} onSelectFile={this.props.onSelectFile}/>
 
                 <Divider horizontal>Or</Divider>
 

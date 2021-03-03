@@ -100,11 +100,29 @@ public class BookController {
 
     @RequestMapping(value = "/api/addBook",
             method = RequestMethod.POST)
-    public HashMap<String, Object> addBook(@RequestHeader("auth-token") String authToken,
-                                           @RequestBody String json) {
-        JSONObject obj = new JSONObject(json);
-        String bookName = (String) obj.get("name");
-        String query = "SELECT COUNT(*) FROM books WHERE bookname = ?";
+    public HashMap<String, Object> addBook(@RequestHeader("auth-token") String authToken) {
+        //JSONObject obj = new JSONObject(json);
+        String bookName = null;
+        String query = null;
+        do {
+            Random rand = new Random();
+            bookName = "book"+rand.nextInt(10000);
+            query = "SELECT COUNT(*) FROM books WHERE bookname = ?";
+            try (AutoRollbackConnection connection = DBHandler.instance.getConnection();
+                 PreparedStatement statement = connection.prepareStatement(query)) {
+                statement.setString(1, bookName);
+                ResultSet rs = statement.executeQuery();
+                if (rs.next()) {
+                    if (rs.getInt(1) > 0)
+                        bookName=null;
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                return JsonWrapper.generateError(e.getMessage());
+            }
+        }
+        while (bookName==null);
+       //  = "SELECT COUNT(*) FROM books WHERE bookname = ?";
         try (AutoRollbackConnection connection = DBHandler.instance.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setString(1, bookName);
