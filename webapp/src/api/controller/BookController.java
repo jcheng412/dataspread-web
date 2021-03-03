@@ -100,7 +100,7 @@ public class BookController {
 
     @RequestMapping(value = "/api/addBook",
             method = RequestMethod.POST)
-    public HashMap<String, Object> addBook(@RequestHeader("auth-token") String authToken) {
+    public HashMap<String, Object> addBook() {
         //JSONObject obj = new JSONObject(json);
         String bookName = null;
         String query = null;
@@ -140,7 +140,7 @@ public class BookController {
         query = "INSERT INTO user_books VALUES (?, ?, 'owner')";
         try (AutoRollbackConnection connection = DBHandler.instance.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setString(1, authToken);
+            statement.setString(1, "guest");
             statement.setString(2, book.getId());
             statement.execute();
             connection.commit();

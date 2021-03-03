@@ -7,7 +7,7 @@ export default class ModalNewFile extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            loadModalOpen: false,
+            //           loadModalOpen: false,
             data: null,
             BooksOptions: [],
             BooksSelected: ""
@@ -18,8 +18,7 @@ export default class ModalNewFile extends Component {
         } else {
             this.triggerObject = (<Button secondary fluid onClick={this.handleOpen}>Open File</Button>);
         }*/
-        this._handleLoad = this._handleLoad.bind(this);
-        this.handleClose = this.handleClose.bind(this);
+        //this._handleLoad = this._handleLoad.bind(this);
         if (typeof process.env.REACT_APP_BASE_HOST === 'undefined') {
             this.urlPrefix = "";
             this.stompClient = Stomp.client("ws://" + window.location.host + "/ds-push/websocket");
@@ -30,23 +29,17 @@ export default class ModalNewFile extends Component {
         }
     }
 
-    handleNew = () =>
-    {
+    handleNew = () => {
         // fetch data from api
         fetch(this.urlPrefix + '/api/addBook')
             .then(response => response.json())
             .then(data => this.transform(data))
-            .then(data => this.setState({
-                BooksOptions: data,
-                loadModalOpen: true
-            }))
-            .catch(()=> {
+            .then(this.props.onSelectFile(data.value))
+            .catch(() => {
                 alert("Lost connection to server.")
             });
 
     }
-
-    //handleClose = () => this.setState({ loadModalOpen: false})
 
 
     //transform data
@@ -64,85 +57,4 @@ export default class ModalNewFile extends Component {
         }
         return data
     }
-
-    onChange = (e, data) => {
-        console.log(data);
-        console.log(data.value);
-        this.setState({ BooksSelected: data.value });
-    }
-
-    _handleLoad () {
-        this.setState({ loadModalOpen: false });
-        this.props.onSelectFile(this.state.BooksSelected);
-    }
-
-    render() {
-        //console.log(this.urlPrefix + '/api/getBooks')
-        return (
-            <Modal
-                trigger={this.triggerObject}
-                open={this.state.loadModalOpen}
-                onClose={this.handleClose}>
-                <Header icon='folder open outline' content='Open File' />
-
-                <Modal.Content>
-                    <div>
-                        <div>
-                            <Dropdown placeholder='Select File' fluid search selection
-                                      options={this.state.BooksOptions} onChange={this.onChange}  />
-                        </div>
-                    </div>
-                </Modal.Content>
-
-                <Modal.Actions>
-                    <Button name="bookLoadButton" onClick={this._handleLoad}>
-                        <Icon name='checkmark' /> Load
-                    </Button>
-                    <Button color='blue' onClick={this.handleClose} inverted>
-                        <Icon name='close' /> Close
-                    </Button>
-                </Modal.Actions>
-            </Modal>
-        )
-    }
-
-    // Todo: resove the passing of this
-
-    // _handleEvent(event) {
-    //   const target = event.target;
-    //   const name = target.name;
-    //   if (name === "bookName") {
-    //       this.bookName = target.value;
-    //       console.log(this.bookName);
-    //   }
-    //   else if (name === "bookLoadButton") {
-    //       fetch(this.urlPrefix + "/api/getSheets/" + this.bookName)
-    //           .then(res => res.json())
-    //           .then(
-    //               (result) => {
-    //                   this.dataCache.reset();
-    //                   this.setState({
-    //                       bookName: this.bookName,
-    //                       sheetName: 'Sheet1',
-    //                       rows: result['data']['sheets'][0]['numRow'],
-    //                       columns: result['data']['sheets'][0]['numCol']
-    //                   });
-    //                   this.subscribed = false;
-    //                   this.grid.scrollToCell ({ columnIndex: 0, rowIndex: 0 });
-    //                   if (this.stompSubscription!=null)
-    //                       this.stompSubscription.unsubscribe();
-    //                   this.stompSubscription = this.stompClient
-    //                       .subscribe('/user/push/updates',
-    //                           this._processUpdates, {bookName: this.state.bookName,
-    //                                   sheetName: this.state.sheetName,
-    //                                   fetchSize: this.fetchSize});
-    //                   console.log("book loaded rows:" + result['data']['sheets'][0]['numRow']);
-    //               }
-    //           )
-    //           .catch((error) => {
-    //               console.error(error);
-    //           });
-    //   }
-    // }
-
 }

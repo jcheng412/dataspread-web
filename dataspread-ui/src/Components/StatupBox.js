@@ -11,7 +11,7 @@ export default class StartupBox extends Component {
       return (
         <div style={center_screen}>
             <Segment padded>
-                <ModalNewFile inMenu={false} onSelectFile={this.props.onSelectFile}/>
+                <ModalNewFile onSelectFile={this.props.onSelectFile}/>
 
                 <Divider horizontal>Or</Divider>
 
